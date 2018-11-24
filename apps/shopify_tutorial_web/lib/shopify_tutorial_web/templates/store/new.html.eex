@@ -1,0 +1,19 @@
+<h1>New Store</h1>
+
+<%= form_for @conn, Routes.store_path(@conn, :create_permission_url), [as: :store], fn f -> %>
+  <%= if @error do %>
+    <div class="alert alert-danger">
+      <p>Oops, <%= @error %> </p>
+    </div>
+  <% end %>
+
+  <%= label f, "Domain name (slug)" %>
+  <%= text_input f, :name %>
+  <%= error_tag f, :name %>
+
+  <div>
+    <%= submit "Save" %>
+  </div>
+<% end %>
+
+<span><%= link "Back", to: Routes.store_path(@conn, :index) %></span>

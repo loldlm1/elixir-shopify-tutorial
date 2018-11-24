@@ -1,0 +1,12 @@
+<h1>Show Store</h1>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @store.name %>
+  </li>
+
+</ul>
+
+<span><%= link "Back", to: Routes.store_path(@conn, :index) %></span>

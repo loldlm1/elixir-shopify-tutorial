@@ -17,6 +17,12 @@ defmodule ShopifyTutorialWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/stores", StoreController, :index
+    get "/stores/new", StoreController, :new
+    get "/stores/create", StoreController, :create
+    get "/stores/:id", StoreController, :show
+    delete "/stores/:id", StoreController, :delete
+    post "/create_permission_url", StoreController, :create_permission_url
   end
 
   # Other scopes may use custom stacks.
