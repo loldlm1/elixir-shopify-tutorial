@@ -5,6 +5,7 @@ defmodule ShopifyTutorial.Stores.Store do
 
   schema "stores" do
     field :name, :string
+    field :access_token, :string, virtual: true
 
     timestamps()
   end
@@ -12,7 +13,8 @@ defmodule ShopifyTutorial.Stores.Store do
   @doc false
   def changeset(store, attrs) do
     store
-    |> cast(attrs, [:name])
+    |> cast(attrs, [:name, :access_token])
     |> validate_required([:name])
+    |> unique_constraint(:name)
   end
 end

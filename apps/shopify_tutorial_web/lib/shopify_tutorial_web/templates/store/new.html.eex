@@ -7,6 +7,8 @@
     </div>
   <% end %>
 
+  <%= hidden_input f, :method, value: "create" %>
+
   <%= label f, "Domain name (slug)" %>
   <%= text_input f, :name %>
   <%= error_tag f, :name %>

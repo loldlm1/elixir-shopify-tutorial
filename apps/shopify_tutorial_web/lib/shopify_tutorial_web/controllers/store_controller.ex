@@ -2,7 +2,6 @@ defmodule ShopifyTutorialWeb.StoreController do
   use ShopifyTutorialWeb, :controller
 
   alias ShopifyTutorial.Stores
-  alias ShopifyTutorial.Stores.Store
 
   def index(conn, _params) do
     stores = Stores.list_stores()
@@ -13,12 +12,8 @@ defmodule ShopifyTutorialWeb.StoreController do
     render(conn, "new.html", error: params["error"])
   end
 
-  def create_permission_url(conn, %{"store" => %{"name" => name}}) do
-    params = %{scope: "read_content,read_products,write_products", redirect_uri: "https://localhost:4443/stores/create"}
-
-    url =
-      Shopify.session(name)
-      |> Shopify.OAuth.permission_url(params)
+  def create_permission_url(conn, %{"store" => %{"name" => name, "method" => method}}) do
+    url = Stores.generate_shopify_url(name, method)
 
     conn
     |> redirect(external: url)
@@ -29,18 +24,34 @@ defmodule ShopifyTutorialWeb.StoreController do
       {:ok, store} ->
         conn
         |> put_flash(:info, "Store created successfully.")
+        |> put_session(:store, Shopify.session(store.name, store.access_token))
         |> redirect(to: Routes.store_path(conn, :show, store))
 
-      {:error, err_message} ->
+      {:error, %Ecto.Changeset{errors: [name: {error_message, _}]}} ->
         conn
-        |> put_flash(:error, err_message)
+        |> put_flash(:error, "Store " <> error_message)
+        |> redirect(to: Routes.store_path(conn, :new))
+
+      {:error, error_message} ->
+        conn
+        |> put_flash(:error, error_message)
         |> redirect(to: Routes.store_path(conn, :new))
     end
   end
 
   def show(conn, %{"id" => id}) do
     store = Stores.get_store!(id)
-    render(conn, "show.html", store: store)
+
+    case get_session(conn, :store) do
+      nil ->
+        url = Stores.generate_shopify_url(store.name, "update")
+
+        conn
+        |> redirect(external: url)
+
+      session ->
+        render(conn, "show.html", store: store)
+    end
   end
 
   def edit(conn, %{"id" => id}) do
@@ -49,17 +60,19 @@ defmodule ShopifyTutorialWeb.StoreController do
     render(conn, "edit.html", store: store, changeset: changeset)
   end
 
-  def update(conn, %{"id" => id, "store" => store_params}) do
-    store = Stores.get_store!(id)
+  def update(conn, params) do
+    shop_name = params["shop"] |> String.replace(".myshopify.com", "")
+    store = Stores.get_store_by_name(shop_name)
 
-    case Stores.update_store(store, store_params) do
+    case Stores.update_store(store, params) do
       {:ok, store} ->
         conn
         |> put_flash(:info, "Store updated successfully.")
+        |> put_session(:store, Shopify.session(store.name, store.access_token))
         |> redirect(to: Routes.store_path(conn, :show, store))
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "edit.html", store: store, changeset: changeset)
+      {:error, error_message} ->
+        render(conn, "index.html", error: error_message)
     end
   end
 
