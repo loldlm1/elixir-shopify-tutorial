@@ -6,6 +6,10 @@
     <strong>Name:</strong>
     <%= @store.name %>
   </li>
+  <li>
+    <strong>Products:</strong>
+    <%= link "List of products", to: Routes.product_path(@conn, :index) %>
+  </li>
 
 </ul>
 

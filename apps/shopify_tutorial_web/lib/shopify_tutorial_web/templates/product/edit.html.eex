@@ -1,0 +1,5 @@
+<h1>Edit Product</h1>
+
+<%= render "form.html", Map.merge(assigns, %{action: Routes.product_path(@conn, :update, @product_id), method: :put}) %>
+
+<span><%= link "Back", to: Routes.product_path(@conn, :index) %></span>

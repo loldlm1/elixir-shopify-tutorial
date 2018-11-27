@@ -1,0 +1,21 @@
+<%= form_for @conn, @action, [as: :product, method: @method], fn f -> %>
+
+  <%= label f, "Title" %>
+  <%= text_input f, :title %>
+
+  <%= label f, "Body" %>
+  <%= textarea f, :body_html %>
+
+  <%= label f, "Vendor" %>
+  <%= text_input f, :vendor %>
+
+  <%= label f, "Product Type" %>
+  <%= text_input f, :product_type %>
+
+  <%= label f, "tags" %>
+  <%= text_input f, :tags %>
+
+  <div>
+    <%= submit "Save" %>
+  </div>
+<% end %>

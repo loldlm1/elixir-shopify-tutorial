@@ -23,6 +23,9 @@ defmodule ShopifyTutorialWeb.Router do
     get "/stores/:id", StoreController, :show
     delete "/stores/:id", StoreController, :delete
     post "/create_permission_url", StoreController, :create_permission_url
+    scope "/store" do
+      resources "/products", ProductController
+    end
   end
 
   # Other scopes may use custom stacks.

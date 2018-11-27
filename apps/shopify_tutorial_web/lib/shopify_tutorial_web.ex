@@ -22,6 +22,7 @@ defmodule ShopifyTutorialWeb do
       use Phoenix.Controller, namespace: ShopifyTutorialWeb
       import Plug.Conn
       import ShopifyTutorialWeb.Gettext
+      import ShopifyTutorialWeb.Session
       alias ShopifyTutorialWeb.Router.Helpers, as: Routes
     end
   end
