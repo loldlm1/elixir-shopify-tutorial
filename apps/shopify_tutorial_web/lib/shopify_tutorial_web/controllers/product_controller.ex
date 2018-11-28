@@ -35,7 +35,7 @@ defmodule ShopifyTutorialWeb.ProductController do
   end
 
   def show(conn, %{"id" => id}) do
-    case Products.get_product!(current_session(conn), id) do
+    case Products.get_product(current_session(conn), id) do
       {:ok, product} ->
         render(conn, "show.html", product: product)
 
